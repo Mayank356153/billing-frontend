@@ -106,7 +106,7 @@ const App = () => {
 
   // --- Totals ---
   const subtotal = items.reduce((sum, item) => sum + item.total, 0);
-  const grandTotal = subtotal ;
+  const grandTotal = subtotal  + Number(coinAdjustment);
   const [billId, setBillId] = useState('');
 
   // Generate ID on Page Load
@@ -152,7 +152,7 @@ const handleSave = async () => {
       billingItems: items, 
       summary: { 
         subtotal: items.reduce((sum, i) => sum + i.total, 0), 
-        grandTotal: items.reduce((sum, i) => sum + i.total, 0) , 
+        grandTotal: items.reduce((sum, i) => sum + i.total, 0) + Number(coinAdjustment), 
         coinAdjustment 
       } 
     };
@@ -171,6 +171,18 @@ const handleSave = async () => {
   } catch (err) {
     alert("Error saving sale");
   }
+  finally{
+    if(!editId){
+      setItems([])
+      setCoinAdjustment(0)
+      setGlobalSearch("")
+      setPartyDetails({
+         customerName: ''
+      })
+      const newId = `SA${Date.now().toString().slice(-6)}`; // Longer for better uniqueness
+    setBillId(newId);
+  }
+}
 };
   // const handleSave = async () => {
   //   try {
@@ -199,7 +211,7 @@ const handleSave = async () => {
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-800">S.A. OFFSET</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-800">Estimate</h1>
           <button className="flex items-center gap-2 px-4 py-2 transition rounded bg-slate-100 text-slate-600 hover:bg-slate-200" onClick={() => navigate('/sales')}>
               <span>📋</span> Sales List
           </button>
@@ -355,7 +367,7 @@ const handleSave = async () => {
         </div>
 
         <div className="py-4 text-sm text-center bg-slate-800 text-slate-300">
-          © 2025 S.A. OFFSET. All rights reserved.
+          © 2025 Estimate. All rights reserved.
         </div>
       </div>
     </div>

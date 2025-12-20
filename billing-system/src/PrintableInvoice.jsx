@@ -35,14 +35,6 @@ const PrintableInvoice = ({ data, onClose }) => {
 
           {/* Supplier & Customer Section */}
           <div className="grid grid-cols-2 mb-6 border border-black">
-            <div className="p-3 border-r border-black">
-              <h1 className="text-lg font-black">S.A. OFFSET</h1>
-              <p>Near Shyam Mandir, Dhobi Ghat Road,</p>
-              <p>Jagjeevan Pura (New Rishi Nagar), Hisar</p>
-              <p><strong>GSTIN:</strong> 06AWJPS9461L1ZP</p>
-              <p><strong>Phone:</strong> 93153-68381</p>
-              <p><strong>Email:</strong> saoffsethisar@gmail.com</p>
-            </div>
             <div className="p-3 bg-slate-50/50">
               <p className="font-bold text-slate-500 uppercase text-[10px]">Bill To:</p>
               <h2 className="font-bold uppercase text-md">{data.customer?.name || data.customerName}</h2>

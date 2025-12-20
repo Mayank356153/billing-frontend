@@ -116,7 +116,7 @@ const ItemList = () => {
         
         {/* Header Section */}
         <div className="flex items-center justify-between p-6 border-b border-gray-50">
-          <h1 className="text-3xl font-bold text-[#334155] tracking-tight">S.A. OFFSET</h1>
+          <h1 className="text-3xl font-bold text-[#334155] tracking-tight">Estimate</h1>
           
           {selectedItems.length > 0 && (
             <button 
@@ -300,7 +300,7 @@ const ItemList = () => {
           </div>
         )}
         <div className="bg-[#334155] py-4 text-center">
-          <p className="text-xs text-white opacity-90">© 2025 S.A. OFFSET. All rights reserved.</p>
+          <p className="text-xs text-white opacity-90">© 2025 Estimate. All rights reserved.</p>
         </div>
       </div>
     </div>
