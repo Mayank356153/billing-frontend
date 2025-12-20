@@ -28,7 +28,7 @@ const SalesList = () => {
       try {
         setLoading(true);
         // Using your specified port and endpoint
-        const response = await axios.get('http://localhost:5000/1sale/all');
+        const response = await axios.get('https://billing-backend-c183.onrender.com/1sale/all');
         console.log(response)
         setSalesData(response.data);
       } catch (err) {

@@ -29,7 +29,7 @@ const App = () => {
     setPartyDetails(prev => ({ ...prev, customerName: query }));
     if (!query) return setCustomerResults([]);
     try {
-      const { data } = await axios.get(`http://localhost:5000/1customer/search?query=${query}`);
+      const { data } = await axios.get(`https://billing-backend-c183.onrender.com/1customer/search?query=${query}`);
       const exactMatch = data.find(c => c.name.toLowerCase() === query.toLowerCase());
       setCustomerResults(!exactMatch ? [...data, { _id: 'new', name: query, isNew: true }] : data);
     } catch (err) { console.error(err); }
@@ -40,7 +40,7 @@ const App = () => {
     setGlobalSearch(query);
     if (!query) return setItemResults([]);
     try {
-      const { data } = await axios.get(`http://localhost:5000/1items/search?query=${query}`);
+      const { data } = await axios.get(`https://billing-backend-c183.onrender.com/1items/search?query=${query}`);
       const exactMatch = data.find(i => i.name.toLowerCase() === query.toLowerCase());
       setItemResults(!exactMatch ? [...data, { _id: 'new', name: query, isNew: true }] : data);
     } catch (err) { console.error(err); }
@@ -115,7 +115,7 @@ const App = () => {
   if (id) {
     const fetchSaleForEdit = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/1sale/${id}`);
+        const { data } = await axios.get(`https://billing-backend-c183.onrender.com/1sale/${id}`);
         if (data.success) {
           const sale = data.data;
           setEditId(sale._id);
@@ -159,14 +159,14 @@ const handleSave = async () => {
 
     let response;
     if (editId) {
-      response = await axios.put(`http://localhost:5000/1sale/update/${editId}`, payload);
+      response = await axios.put(`https://billing-backend-c183.onrender.com/1sale/update/${editId}`, payload);
     } else {
-      response = await axios.post('http://localhost:5000/1sale/create', payload);
+      response = await axios.post('https://billing-backend-c183.onrender.com/1sale/create', payload);
     }
 
     if (response.data.success) {
       alert(editId ? "Sale Updated!" : "Sale Saved!");
-      navigate('/sales'); // Redirect back to list after save
+       
     }
   } catch (err) {
     alert("Error saving sale");
@@ -349,7 +349,7 @@ const handleSave = async () => {
               onClick={handleSave}
               className="flex items-center gap-2 px-10 py-3 font-bold text-white transition rounded-lg shadow-lg bg-slate-700 hover:bg-slate-800"
             >
-              <span>💾</span> Save & Print
+              <span>💾</span> Save 
             </button>
           </div>
         </div>
