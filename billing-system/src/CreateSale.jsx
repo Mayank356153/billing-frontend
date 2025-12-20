@@ -215,6 +215,9 @@ const handleSave = async () => {
           <button className="flex items-center gap-2 px-4 py-2 transition rounded bg-slate-100 text-slate-600 hover:bg-slate-200" onClick={() => navigate('/sales')}>
               <span>📋</span> Sales List
           </button>
+          <button className="flex items-center gap-2 px-4 py-2 transition rounded bg-slate-100 text-slate-600 hover:bg-slate-200" onClick={() => navigate('/items')}>
+              <span>📋</span> Items List
+          </button>
         </div>
 
         <div className="p-8">

@@ -98,6 +98,12 @@ const SalesList = () => {
             >
               <FilePlus size={18} /> Create Invoice
             </button>
+            <button 
+              onClick={() => navigate("/items")}
+              className="flex items-center gap-2 font-medium transition text-slate-500 hover:text-slate-800"
+            >
+              <FilePlus size={18} /> Items List
+            </button>
           </div>
         </div>
 

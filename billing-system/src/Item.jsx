@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Search, Package, Trash2, CheckSquare, Square , Plus, X } from 'lucide-react';
-
+import { useNavigate } from 'react-router-dom';
 const ItemList = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +10,7 @@ const ItemList = () => {
   const [selectedItems, setSelectedItems] = useState([]); // Track selected IDs
   const [showModal, setShowModal] = useState(false);
   const [newItems, setNewItems] = useState([{ name: '', salesPrice: '', mrp: '' }]);
-  
+  const Navigate=useNavigate();
   useEffect(() => {
     fetchItems();
   }, []);
@@ -132,6 +132,12 @@ const ItemList = () => {
               className="bg-[#334155] text-white px-5 py-2 rounded-lg flex items-center gap-2 hover:bg-slate-800 transition text-sm font-bold shadow-md"
             >
               <Plus size={18} /> Add Multiple Items
+            </button>
+          <button 
+              onClick={() => Navigate("/sales/create")}
+              className="bg-[#334155] text-white px-5 py-2 rounded-lg flex items-center gap-2 hover:bg-slate-800 transition text-sm font-bold shadow-md"
+            >
+              <Plus size={18} /> Create Invoice
             </button>
         </div>
 
