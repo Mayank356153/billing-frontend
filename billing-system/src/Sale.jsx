@@ -17,7 +17,7 @@ const SalesList = () => {
   const fetchSales = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://billing-backend-c183.onrender.com/1sale/all');
+      const response = await axios.get('https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1sale/all');
       setSalesData(response.data);
     } catch (err) {
       console.error("Error fetching sales history:", err);
@@ -34,7 +34,7 @@ const SalesList = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this invoice?")) {
       try {
-        await axios.delete(`https://billing-backend-c183.onrender.com/1sale/${id}`);
+        await axios.delete(`https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1sale/${id}`);
         setSalesData(prev => prev.filter(sale => sale._id !== id));
         alert("Invoice deleted successfully");
       } catch (err) {
@@ -47,7 +47,7 @@ const SalesList = () => {
   const handleBulkDelete = async () => {
     if (window.confirm(`Are you sure you want to delete ${selectedIds.length} invoices?`)) {
       try {
-        await axios.post('https://billing-backend-c183.onrender.com/1sale/bulk-delete', { ids: selectedIds });
+        await axios.post('https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1sale/bulk-delete', { ids: selectedIds });
         setSalesData(prev => prev.filter(sale => !selectedIds.includes(sale._id)));
         setSelectedIds([]);
         alert("Selected invoices deleted successfully");

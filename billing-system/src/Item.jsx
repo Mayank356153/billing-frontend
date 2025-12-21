@@ -39,7 +39,7 @@ const ItemList = () => {
       const itemsToSave = newItems.filter(item => item.name.trim() !== '');
       if (itemsToSave.length === 0) return alert("Please add at least one item name.");
 
-      await axios.post('https://billing-backend-c183.onrender.com/1items/bulk-create', { items: itemsToSave });
+      await axios.post('https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1items/bulk-create', { items: itemsToSave });
       
       setShowModal(false);
       setNewItems([{ name: '', salesPrice: '', mrp: '' }]);
@@ -52,7 +52,7 @@ const ItemList = () => {
   const fetchItems = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://billing-backend-c183.onrender.com/1items');
+      const response = await axios.get('https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1items');
       setItems(response.data);
     } catch (err) {
       console.error("Error fetching inventory items:", err);
@@ -81,7 +81,7 @@ const ItemList = () => {
   const handleBulkDelete = async () => {
     if (window.confirm(`Are you sure you want to delete ${selectedItems.length} items?`)) {
       try {
-        await axios.post('https://billing-backend-c183.onrender.com/1items/bulk-delete', { ids: selectedItems });
+        await axios.post('https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1items/bulk-delete', { ids: selectedItems });
         setSelectedItems([]); // Clear selection
         fetchItems(); // Refresh list
       } catch (err) {
@@ -98,7 +98,7 @@ const ItemList = () => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         // Assuming a delete endpoint exists at your base items route
-        await axios.delete(`https://billing-backend-c183.onrender.com/1items/${id}`);
+        await axios.delete(`https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1items/${id}`);
         fetchItems(); // Refresh the list
       } catch (err) {
         console.error("Error deleting item:", err);

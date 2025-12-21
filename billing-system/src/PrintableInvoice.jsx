@@ -1,122 +1,202 @@
-import React from 'react';
+import React from "react";
 
 const PrintableInvoice = ({ data, onClose }) => {
   if (!data) return null;
 
+  const handlePrint = () => {
+    const content = document.getElementById("invoice-content");
+    if (!content) return;
+
+    const printWindow = window.open("", "", "width=900,height=1200");
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Invoice</title>
+          <style>
+            @page {
+              size: A4;
+              margin: 12mm;
+            }
+
+            body {
+              font-family: Arial, Helvetica, sans-serif;
+              color: #000;
+              margin: 0;
+              padding: 0;
+            }
+
+            h1, h2, h3 {
+              margin: 0;
+            }
+
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              page-break-inside: auto;
+            }
+
+            thead {
+              display: table-header-group;
+            }
+
+            tr {
+              page-break-inside: avoid;
+              page-break-after: auto;
+            }
+
+            th, td {
+              border: 1px solid #000;
+              padding: 6px;
+              font-size: 11px;
+            }
+
+            th {
+              background: #f2f2f2;
+              font-weight: bold;
+            }
+
+            .text-right { text-align: right; }
+            .text-center { text-align: center; }
+            .uppercase { text-transform: uppercase; }
+
+            .summary {
+              margin-top: 10px;
+              page-break-inside: avoid;
+            }
+
+            .terms {
+              font-size: 10px;
+              margin-top: 10px;
+              page-break-inside: avoid;
+            }
+          </style>
+        </head>
+        <body>
+          ${content.innerHTML}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
+
   return (
-    /* Full-screen Backdrop to focus on the Invoice */
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/60 backdrop-blur-sm no-print">
-      <div className="relative w-full max-w-[850px] bg-white rounded-lg shadow-2xl p-8 my-8">
-        
-        {/* Modal Controls - Hidden during print */}
-        <div className="flex justify-between mb-6 no-print">
-          <button 
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 no-print">
+      <div className="w-full max-w-[900px] bg-white p-6">
+
+        {/* Controls (not printed) */}
+        <div className="flex justify-between mb-4 no-print">
+          <button
             onClick={onClose}
-            className="px-4 py-2 font-bold transition rounded text-slate-500 hover:bg-slate-100"
+            className="px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-800 hover:cursor-pointer"
           >
-            ← Back to List
+            ← Back
           </button>
-          <div className="flex gap-3">
-            <button 
-              onClick={() => window.print()}
-              className="px-8 py-2 font-bold text-white transition rounded shadow-lg bg-slate-800 hover:bg-black"
-            >
-              Print Bill
-            </button>
-          </div>
+
+          <button
+            onClick={handlePrint}
+            className="px-6 py-2 font-bold text-white bg-black rounded"
+          >
+            Print A4 Invoice
+          </button>
         </div>
 
-        {/* --- START OF ACTUAL INVOICE PRINT AREA --- */}
-        <div id="invoice-content" className="border border-slate-300 p-6 text-[12px] text-black leading-normal">
-          <div className="text-center font-bold text-[16px] uppercase mb-1">TAX INVOICE/BILL OF SUPPLY</div>
-          <p className="text-center text-[10px] text-slate-500 mb-6 border-b pb-2">
-            Original for Recipient | Duplicate for Transporter | Triplicate for Supplier
+        {/* ================= PRINT AREA ================= */}
+        <div id="invoice-content">
+
+          <h2 className="text-center uppercase font-bold text-[16px] mb-1">
+            Tax Invoice / Bill of Supply
+          </h2>
+          <p className="text-center text-[10px] mb-6">
+            Original for Recipient
           </p>
 
-          {/* Supplier & Customer Section */}
-          <div className="grid grid-cols-2 mb-6 border border-black">
-            <div className="p-3 bg-slate-50/50">
-              <p className="font-bold text-slate-500 uppercase text-[10px]">Bill To:</p>
-              <h2 className="font-bold uppercase text-md">{data.customer?.name || data.customerName}</h2>
-              <p><strong>Mobile:</strong> {data.customer?.phone || data.phoneNumber || '-'}</p>
-              <p><strong>GSTIN:</strong> {data.customer?.gstNumber || data.gstNumber || '-'}</p>
-            </div>
-          </div>
-
-          {/* Details Bar */}
-          <div className="grid grid-cols-3 p-3 mb-6 font-bold border border-black bg-slate-50">
-            <div>Invoice No: {data.billId || 'SA08'}</div>
-            <div className="text-center">Date: {new Date(data.date).toLocaleDateString('en-IN')}</div>
-            <div className="text-right">Payment: Cash</div>
-          </div>
+          {/* Customer + Invoice Info */}
+          <table style={{ marginBottom: "10px" }}>
+            <tbody>
+              <tr>
+                <td width="60%">
+                  <strong>Bill To:</strong><br />
+                  {data.customer?.name || data.customerName}<br />
+                  Mobile: {data.customer?.phone || data.phoneNumber || "-"}<br />
+                  GSTIN: {data.customer?.gstNumber || data.gstNumber || "-"}
+                </td>
+                <td width="40%">
+                  Invoice No: {data.billId}<br />
+                  Date: {new Date(data.date).toLocaleDateString("en-IN")}<br />
+                  Payment: Cash
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
           {/* Items Table */}
-          <table className="w-full border-collapse border border-black text-[11px] mb-6">
-            <thead className="bg-slate-100">
+          <table>
+            <thead>
               <tr>
-                <th className="w-10 p-2 border border-black">SN.</th>
-                <th className="p-2 text-left border border-black">ITEM NAME</th>
-                <th className="w-16 p-2 text-center border border-black">QTY</th>
-                <th className="w-20 p-2 text-right border border-black">MRP</th>
-                <th className="w-20 p-2 text-right border border-black">RATE</th>
-                <th className="w-24 p-2 text-right border border-black">TOTAL</th>
+                <th width="5%">#</th>
+                <th>Item Name</th>
+                <th width="8%">Qty</th>
+                <th width="12%">MRP</th>
+                <th width="12%">Rate</th>
+                <th width="15%">Total</th>
               </tr>
             </thead>
             <tbody>
               {data.items.map((item, idx) => (
                 <tr key={idx}>
-                  <td className="p-2 text-center border border-black">{idx + 1}</td>
-                  <td className="p-2 font-medium uppercase border border-black">{item.name}</td>
-                  <td className="p-2 text-center border border-black">{item.qty}</td>
-                  <td className="p-2 text-right border border-black">{item.mrp || item.rate}</td>
-                  <td className="p-2 text-right border border-black">{item.rate}</td>
-                  <td className="p-2 font-bold text-right border border-black">₹{(item.qty * item.rate).toFixed(2)}</td>
+                  <td className="text-center">{idx + 1}</td>
+                  <td className="uppercase">{item.name}</td>
+                  <td className="text-center">{item.qty}</td>
+                  <td className="text-right">{item.mrp || item.rate}</td>
+                  <td className="text-right">{item.rate}</td>
+                  <td className="text-right">
+                    ₹{(item.qty * item.rate).toFixed(2)}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          {/* Calculation Summary */}
-          <div className="grid grid-cols-2 border border-t-0 border-black">
-            <div className="p-4 border-r border-black text-[10px] italic text-slate-500">
-              <p className="mb-1 not-italic font-bold text-black underline">Terms & Conditions:</p>
-              <p>1. Goods once sold will not be taken back.</p>
-              <p>2. All disputes subject to Hisar Jurisdiction.</p>
-            </div>
-            <div className="p-4 space-y-2">
-              <div className="flex justify-between text-slate-600">
-                <span>Sub-Total</span>
-                <span>₹{data.subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-black font-black text-[16px] text-blue-800">
-                <span>GRAND TOTAL</span>
-                <span>₹{data.grandTotal.toFixed(2)}</span>
-              </div>
-              <p className="text-[10px] font-bold text-right italic">
-                (Rupees {data.grandTotal.toLocaleString('en-IN')} Only)
-              </p>
-            </div>
-          </div>
+          {/* Summary (won't break across pages) */}
+          <table className="summary">
+            <tbody>
+              <tr>
+                <td width="70%" className="terms">
+                  <strong>Terms & Conditions:</strong><br />
+                  1. Goods once sold will not be taken back.<br />
+                  2. All disputes subject to jurisdiction.
+                </td>
+                <td width="30%">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>Sub-Total</td>
+                        <td className="text-right">
+                          ₹{data.subtotal.toFixed(2)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Grand Total</strong></td>
+                        <td className="text-right">
+                          <strong>₹{data.grandTotal.toFixed(2)}</strong>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
         </div>
-        {/* --- END OF PRINT AREA --- */}
+        {/* ============== END PRINT AREA ============== */}
 
       </div>
-
-      <style jsx>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white !important; margin: 0; padding: 0; }
-          .fixed { position: static !important; display: block !important; }
-          .shadow-2xl, .rounded-lg, .bg-black\/60 { 
-            box-shadow: none !important; 
-            background: transparent !important; 
-            border: none !important; 
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          #invoice-content { border: 1px solid black !important; width: 100% !important; }
-        }
-      `}</style>
     </div>
   );
 };
