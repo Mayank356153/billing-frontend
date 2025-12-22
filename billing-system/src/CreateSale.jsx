@@ -5,6 +5,8 @@ import { Trash2, Search, Plus } from 'lucide-react';
 import { useParams,useNavigate,useSearchParams } from 'react-router-dom';
 
 
+import debounce from "lodash.debounce";
+import { useRef, useCallback } from "react";
 
 
 const App = () => {
@@ -25,26 +27,99 @@ const App = () => {
   const [coinAdjustment, setCoinAdjustment] = useState(0);
 
   // --- Search Customers ---
-  const handleCustomerSearch = async (query) => {
-    setPartyDetails(prev => ({ ...prev, customerName: query }));
-    if (!query) return setCustomerResults([]);
-    try {
-      const { data } = await axios.get(`https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1customer/search?query=${query}`);
-      const exactMatch = data.find(c => c.name.toLowerCase() === query.toLowerCase());
-      setCustomerResults(!exactMatch ? [...data, { _id: 'new', name: query, isNew: true }] : data);
-    } catch (err) { console.error(err); }
-  };
+  const customerAbortRef = useRef(null);
+
+const fetchCustomers = async (query) => {
+  if (customerAbortRef.current) {
+    customerAbortRef.current.abort();
+  }
+
+  customerAbortRef.current = new AbortController();
+
+  try {
+    const { data } = await axios.get(
+      // `https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1customer/search`,
+      `http://localhost:5004/1customer/search`,
+      {
+        params: { query },
+        signal: customerAbortRef.current.signal,
+      }
+    );
+
+    const exactMatch = data.find(
+      c => c.name.toLowerCase() === query.toLowerCase()
+    );
+
+    setCustomerResults(
+      !exactMatch
+        ? [...data.slice(0, 8), { _id: "new", name: query, isNew: true }]
+        : data.slice(0, 8)
+    );
+  } catch (err) {
+    if (err.name !== "CanceledError") console.error(err);
+  }
+};
+
+const debouncedCustomerSearch = useCallback(
+  debounce(fetchCustomers, 300),
+  []
+);
+
+const handleCustomerSearch = (query) => {
+  setPartyDetails(prev => ({ ...prev, customerName: query }));
+
+  if (query.length < 2) {
+    setCustomerResults([]);
+    return;
+  }
+
+  debouncedCustomerSearch(query);
+};
 
   // --- Global Item Search ---
-  const handleGlobalItemSearch = async (query) => {
-    setGlobalSearch(query);
-    if (!query) return setItemResults([]);
+  const itemAbortRef = useRef(null);
+
+  const fetchItems = async (query) => {
+    if (itemAbortRef.current) {
+      itemAbortRef.current.abort();
+    }
+  
+    itemAbortRef.current = new AbortController();
+  
     try {
-      const { data } = await axios.get(`https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1items/search?query=${query}`);
+      const { data } = await axios.get(
+        // `https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1items/search`,
+        `http://localhost:5004/1items/search`,
+        {
+          params: { query },
+          signal: itemAbortRef.current.signal,
+        }
+      );
+  
       const exactMatch = data.find(i => i.name.toLowerCase() === query.toLowerCase());
       setItemResults(!exactMatch ? [...data, { _id: 'new', name: query, isNew: true }] : data);
-    } catch (err) { console.error(err); }
+
+    } catch (err) {
+      if (err.name !== "CanceledError") console.error(err);
+    }
   };
+  
+  const debouncedItemSearch = useCallback(
+    debounce(fetchItems, 300),
+    []
+  );
+  
+  const handleGlobalItemSearch = (query) => {
+    setGlobalSearch(query);
+  
+    if (query.length < 2) {
+      setItemResults([]);
+      return;
+    }
+  
+    debouncedItemSearch(query);
+  };
+  
 
   // --- Add/Update Item Logic ---
   const addOrUpdateItem = (product) => {
@@ -235,7 +310,7 @@ const handleSave = async () => {
                   onChange={(e) => handleCustomerSearch(e.target.value)}
                   className="w-full p-3 transition border rounded-md outline-none focus:ring-2 focus:ring-blue-400" 
                 />
-                {customerResults.length > 0 && (
+                {customerResults.length > 0 && partyDetails.customerName != "" && (
                   <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
                     {customerResults.map(c => (
                       <div key={c._id} onClick={() => { setPartyDetails({...partyDetails, ...c, customerName: c.name}); setCustomerResults([]); }} className="flex justify-between p-2 cursor-pointer hover:bg-slate-100">
@@ -263,7 +338,7 @@ const handleSave = async () => {
                   onChange={(e) => handleGlobalItemSearch(e.target.value)}
                 />
               </div>
-              {itemResults.length > 0 && (
+              {itemResults.length > 0 && globalSearch && (
                 <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
                   {itemResults.map(p => (
                     <div key={p._id} onClick={() => addOrUpdateItem(p)} className="flex justify-between p-2 cursor-pointer hover:bg-slate-100">
