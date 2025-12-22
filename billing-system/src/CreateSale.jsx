@@ -38,8 +38,8 @@ const fetchCustomers = async (query) => {
 
   try {
     const { data } = await axios.get(
-      `https://6949ac23dda00f00082229f5--billing-backend.netlify.app/.netlify/functions/api/1customer/search`,
-      // `http://localhost:5004/1customer/search`,
+      // `https://6949ac23dda00f00082229f5--billing-backend.netlify.app/.netlify/functions/api/1customer/search`,
+      `https://pos.inspiredgrow.in/vps/1customer/search`,
       {
         params: { query },
         signal: customerAbortRef.current.signal,
@@ -88,8 +88,8 @@ const handleCustomerSearch = (query) => {
   
     try {
       const { data } = await axios.get(
-        `https://6949ac23dda00f00082229f5--billing-backend.netlify.app/.netlify/functions/api/1items/search`,
-        // `http://localhost:5004/1items/search`,
+        // `https://6949ac23dda00f00082229f5--billing-backend.netlify.app/.netlify/functions/api/1items/search`,
+        `https://pos.inspiredgrow.in/vps/1items/search`,
         {
           params: { query },
           signal: itemAbortRef.current.signal,
@@ -190,7 +190,7 @@ const handleCustomerSearch = (query) => {
   if (id) {
     const fetchSaleForEdit = async () => {
       try {
-        const { data } = await axios.get(`https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1sale/${id}`);
+        const { data } = await axios.get(`https://pos.inspiredgrow.in/vps/1sale/${id}`);
         if (data.success) {
           const sale = data.data;
           setEditId(sale._id);
@@ -234,9 +234,9 @@ const handleSave = async () => {
 
     let response;
     if (editId) {
-      response = await axios.put(`https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1sale/update/${editId}`, payload);
+      response = await axios.put(`https://pos.inspiredgrow.in/vps/1sale/update/${editId}`, payload);
     } else {
-      response = await axios.post('https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1sale/create', payload);
+      response = await axios.post('https://pos.inspiredgrow.in/vps/1sale/create', payload);
     }
 
     if (response.data.success) {
