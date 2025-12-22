@@ -38,8 +38,8 @@ const fetchCustomers = async (query) => {
 
   try {
     const { data } = await axios.get(
-      // `https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1customer/search`,
-      `http://localhost:5004/1customer/search`,
+      `https://6949ac23dda00f00082229f5--billing-backend.netlify.app/.netlify/functions/api/1customer/search`,
+      // `http://localhost:5004/1customer/search`,
       {
         params: { query },
         signal: customerAbortRef.current.signal,
@@ -88,8 +88,8 @@ const handleCustomerSearch = (query) => {
   
     try {
       const { data } = await axios.get(
-        // `https://69484167729be5fb9f8c1611--billing-backend.netlify.app/.netlify/functions/api/1items/search`,
-        `http://localhost:5004/1items/search`,
+        `https://6949ac23dda00f00082229f5--billing-backend.netlify.app/.netlify/functions/api/1items/search`,
+        // `http://localhost:5004/1items/search`,
         {
           params: { query },
           signal: itemAbortRef.current.signal,
