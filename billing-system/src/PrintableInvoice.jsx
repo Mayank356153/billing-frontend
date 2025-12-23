@@ -2,6 +2,18 @@ import React from "react";
 
 const PrintableInvoice = ({ data, onClose }) => {
   if (!data) return null;
+// 🔹 Calculate totals WITHOUT changing design
+const totalMRP = data.items.reduce(
+  (sum, item) => sum + (item.itemId.mrp) * item.qty,
+  0
+);
+
+const totalSalesPrice = data.items.reduce(
+  (sum, item) => sum + item.rate * item.qty,
+  0
+);
+console.log(data)
+const totalDiscount = totalMRP - totalSalesPrice;
 
   const handlePrint = () => {
     const content = document.getElementById("invoice-content");
@@ -152,8 +164,8 @@ const PrintableInvoice = ({ data, onClose }) => {
                   <td className="text-center">{idx + 1}</td>
                   <td className="uppercase">{item.name}</td>
                   <td className="text-center">{item.qty}</td>
-                  <td className="text-right">{item.mrp || item.rate}</td>
-                  <td className="text-right">{item.rate}</td>
+                  <td className="text-right">{item.itemId.mrp.toFixed(2)}</td>
+                  <td className="text-right">{item.rate.toFixed(2)}</td>
                   <td className="text-right">
                     ₹{(item.qty * item.rate).toFixed(2)}
                   </td>
@@ -172,22 +184,45 @@ const PrintableInvoice = ({ data, onClose }) => {
                   2. All disputes subject to jurisdiction.
                 </td>
                 <td width="30%">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td>Sub-Total</td>
-                        <td className="text-right">
-                          ₹{data.subtotal.toFixed(2)}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><strong>Grand Total</strong></td>
-                        <td className="text-right">
-                          <strong>₹{data.grandTotal.toFixed(2)}</strong>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <table>
+  <tbody>
+    <tr>
+      <td>Total MRP</td>
+      <td className="text-right">
+        ₹{totalMRP.toFixed(2)}
+      </td>
+    </tr>
+
+    <tr>
+      <td>Total Sales Price</td>
+      <td className="text-right">
+        ₹{totalSalesPrice.toFixed(2)}
+      </td>
+    </tr>
+
+    <tr>
+      <td>Discount</td>
+      <td className="text-right">
+        ₹{totalDiscount.toFixed(2)}
+      </td>
+    </tr>
+
+    <tr>
+      <td>Sub-Total</td>
+      <td className="text-right">
+        ₹{data.subtotal.toFixed(2)}
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>Grand Total</strong></td>
+      <td className="text-right">
+        <strong>₹{data.grandTotal.toFixed(2)}</strong>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
                 </td>
               </tr>
             </tbody>

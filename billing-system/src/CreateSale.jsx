@@ -359,10 +359,10 @@ const handleSave = async () => {
       <thead className="border-b bg-slate-50 text-slate-600">
         <tr>
           <th className="w-12 p-3 border-r">#</th>
-          <th className="w-20 p-3 text-center border-r">DISC %</th> {/* New Column */}
           <th className="p-3 border-r">ITEM NAME</th>
           <th className="w-20 p-3 text-center border-r">QTY</th>
           <th className="w-24 p-3 text-center border-r">MRP</th>
+          <th className="w-20 p-3 text-center border-r">DISC %</th> {/* New Column */}
           <th className="w-24 p-3 text-center border-r">RATE</th>
           <th className="p-3 text-right w-28">TOTAL</th>
           <th className="w-10 p-3"></th>
@@ -372,15 +372,7 @@ const handleSave = async () => {
         {items.map((item, index) => (
           <tr key={item.id} className="border-b">
             <td className="p-3 text-center border-r">{index + 1}</td>
-            <td className="p-3 border-r">
-               <input 
-                 type="number" 
-                 className="w-full font-medium text-center text-red-500 outline-none" 
-                 placeholder="0"
-                 value={item.discount} 
-                 onChange={(e) => handleRowChange(index, 'discount', e.target.value)} 
-               />
-            </td>
+            
             <td className="p-3 border-r">
               <input type="text" className="w-full bg-transparent outline-none" value={item.name} onChange={(e) => handleRowChange(index, 'name', e.target.value)} />
             </td>
@@ -391,7 +383,15 @@ const handleSave = async () => {
                <input type="number" className="w-full text-center outline-none" value={item.mrp} onChange={(e) => handleRowChange(index, 'mrp', e.target.value)} />
             </td>
             {/* Discount Input */}
-           
+            <td className="p-3 border-r">
+               <input 
+                 type="number" 
+                 className="w-full font-medium text-center text-red-500 outline-none" 
+                 placeholder="0"
+                 value={item.discount} 
+                 onChange={(e) => handleRowChange(index, 'discount', e.target.value)} 
+               />
+            </td>
             <td className="p-3 border-r">
                <input type="number" className="w-full font-bold text-center text-blue-600 outline-none" value={item.rate} onChange={(e) => handleRowChange(index, 'rate', e.target.value)} />
             </td>
