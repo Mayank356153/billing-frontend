@@ -135,13 +135,13 @@ const handleCustomerSearch = (query) => {
       const initialMrp = product.mrp || 0;
       const initialDiscount = 0;
       const initialRate = initialMrp - (initialMrp * initialDiscount / 100);
-  
+  console.log(product)
       const newItem = {
         id: Date.now(),
         name: product.name,
         qty: 1,
         mrp: initialMrp,
-        discount: initialDiscount, // New Field
+        discount: product.discountPercentage || initialDiscount, // New Field
         rate: product.salesPrice || initialRate,
         total: product.salesPrice || initialRate
       };
@@ -204,7 +204,7 @@ const handleCustomerSearch = (query) => {
             qty: item.qty,
             rate: item.rate,
             mrp: item.itemId.mrp || 0,
-            total: item.total
+            total: item.total,discount:item.itemId.discountPercentage || 0
           })));
         }
       } catch (err) {
@@ -419,7 +419,7 @@ const handleSave = async () => {
                 <span>₹{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-bold">Coin Adjustment:</span>
+                <span className="font-bold">Balance:</span>
                 <input 
                   type="number" 
                   value={coinAdjustment} 

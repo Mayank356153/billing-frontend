@@ -53,6 +53,7 @@ const ItemList = () => {
     try {
       setLoading(true);
       const response = await axios.get('https://pos.inspiredgrow.in/vps/1items');
+      console.log(response.data);
       setItems(response.data);
     } catch (err) {
       console.error("Error fetching inventory items:", err);
