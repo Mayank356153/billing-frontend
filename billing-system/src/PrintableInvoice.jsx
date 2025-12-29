@@ -127,14 +127,16 @@ const PrintableInvoice = ({ data, onClose }) => {
                   <td className="uppercase font-medium">{item.name || item.itemId?.name}</td>
                   <td className="text-center">{item.qty}</td>
                   <td className="text-right">{item.itemId?.mrp?.toFixed(2) || "0.00"}</td>
-                  <td className="text-right">{item.rate.toFixed(2)}</td>
-                  {hasDiscount && (
+                  <td className="text-right"> {item.itemId?.discountPercentage > 0
+                        ? `-`
+                        : `${item.rate.toFixed(2)}`}</td>
+                  
                     <td className="text-right">
                       {item.itemId?.discountPercentage > 0
                         ? `${item.itemId.discountPercentage}%`
-                        : "0%"}
+                        : "-"}
                     </td>
-                  )}
+                 
                   <td className="text-right font-bold">
                     ₹{(item.qty * item.rate).toFixed(2)}
                   </td>
