@@ -91,9 +91,9 @@ const PrintableInvoice = ({ data, onClose }) => {
             <tbody>
               <tr>
                 <td width="60%" className="align-top">
-                  <div className="font-bold border-b mb-1">Bill To:</div>
+                  <div className="font-bold  mb-1">Bill To: {data.customer?.name || data.customerName}</div>
                   <div className="text-[12px]">
-                    <span className="font-bold">{data.customer?.name || data.customerName}</span><br />
+                    {/* <span className="font-bold">{data.customer?.name || data.customerName}</span><br /> */}
                     Mobile: {data.customer?.phone || data.phoneNumber || "-"}<br />
                     GSTIN: {data.customer?.gstNumber || data.gstNumber || "-"}
                   </div>
@@ -116,7 +116,7 @@ const PrintableInvoice = ({ data, onClose }) => {
                 <th width="8%">Qty</th>
                 <th width="12%">MRP</th>
                 <th width="12%">Rate</th>
-                {hasDiscount && <th width="10%">Disc %</th>}
+                 <th width="10%">Disc %</th>
                 <th width="15%">Total</th>
               </tr>
             </thead>
@@ -124,20 +124,20 @@ const PrintableInvoice = ({ data, onClose }) => {
               {data.items.map((item, idx) => (
                 <tr key={idx}>
                   <td className="text-center">{idx + 1}</td>
-                  <td className="uppercase font-medium">{item.name || item.itemId?.name}</td>
+                  <td className="uppercase font-medium text-center">{item.name || item.itemId?.name}</td>
                   <td className="text-center">{item.qty}</td>
-                  <td className="text-right">{item.itemId?.mrp?.toFixed(2) || "0.00"}</td>
-                  <td className="text-right"> {item.itemId?.discountPercentage > 0
+                  <td className="text-center">{item.itemId?.mrp?.toFixed(2) || "0.00"}</td>
+                  <td className="text-center"> {(item.itemId?.discountPercentage || item.itemId?.discount) > 0
                         ? `-`
                         : `${item.rate.toFixed(2)}`}</td>
                   
-                    <td className="text-right">
-                      {item.itemId?.discountPercentage > 0
-                        ? `${item.itemId.discountPercentage}%`
+                    <td className="text-center">
+                      {(item.itemId?.discountPercentage ||  item.itemId?.discount)> 0
+                        ? `${item.itemId.discountPercentage ||  item.itemId?.discount}%`
                         : "-"}
                     </td>
                  
-                  <td className="text-right font-bold">
+                  <td className="text-center font-bold">
                     ₹{(item.qty * item.rate).toFixed(2)}
                   </td>
                 </tr>
@@ -160,20 +160,18 @@ const PrintableInvoice = ({ data, onClose }) => {
                   <table className="w-full m-0" style={{ border: "none" }}>
                     <tbody>
                       <tr>
+                        <td className="border-0 font-bold border-t">Total</td>
+                        <td className="text-right  border-t text-[14px]">
+                          ₹{totalSalesPrice.toFixed(2)}
+                        </td>
+                      </tr>
+                      <tr>
                         <td className="border-0">Balance</td>
-                        <td className="text-right border-0">₹{data.coinAdjustment.toFixed(2)}</td>
+                        <td className="text-right border-0">+ ₹{data.coinAdjustment.toFixed(2)}</td>
                       </tr>
                       <tr>
-                        <td className="border-0">Total MRP</td>
-                        <td className="text-right border-0">₹{totalMRP.toFixed(2)}</td>
-                      </tr>
-                      <tr>
-                        <td className="border-0">Total Discount</td>
-                        <td className="text-right border-0 text-green-600">- ₹{totalDiscount.toFixed(2)}</td>
-                      </tr>
-                      <tr>
-                        <td className="border-0 font-bold border-t">Grand Total</td>
-                        <td className="text-right font-bold border-t text-[14px]">
+                        <td className="border-0 font-bold border-t">Total</td>
+                        <td className="text-right font-bold  border-t text-[14px]">
                           ₹{data.grandTotal.toFixed(2)}
                         </td>
                       </tr>
